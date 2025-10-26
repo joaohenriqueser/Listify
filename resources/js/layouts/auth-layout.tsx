@@ -51,7 +51,7 @@ export default function AuthenticatedLayout({ header, children}: AuthenticatedLa
                         <div className="flex">
                             {/* Logo */}
                             <div className="shrink-0 flex items-center">
-                                <Link href={route('dashboard')}>
+                                <Link href={route('dashboard') ?? '/'}> // Se 'dashboard' falhar, vá para a '/'
                                     <span className="sr-only">Dashboard</span>
                                 </Link>
                             </div>
@@ -65,7 +65,7 @@ export default function AuthenticatedLayout({ header, children}: AuthenticatedLa
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
-                                            {auth.user.name}
+                                            {auth.user?.name}
                                             <svg className="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                                             </svg>
@@ -112,8 +112,8 @@ export default function AuthenticatedLayout({ header, children}: AuthenticatedLa
                     </div>
                     <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
                         <div className="px-4">
-                            <div className="font-medium text-base text-gray-800 dark:text-gray-200">{auth.user.name}</div>
-                            <div className="font-medium text-sm text-gray-500">{auth.user.email}</div>
+                            <div className="font-medium text-base text-gray-800 dark:text-gray-200">{auth.user?.name}</div>
+                            <div className="font-medium text-sm text-gray-500">{auth.user?.email}</div>
                         </div>
                         <div className="mt-3 space-y-1">
                              <Link href={route('profile.edit')} className="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">

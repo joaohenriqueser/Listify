@@ -25,6 +25,18 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+Route::middleware('guest')->group(function () {
+    // Rota para MOSTRAR a página de login
+    Route::get('login', function () {
+        return Inertia::render('auth/login'); // Carrega o seu arquivo login.tsx
+    })->name('login');
+
+    // Rota para MOSTRAR a página de registro
+    Route::get('register', function () {
+        return Inertia::render('auth/register'); // Carrega o seu arquivo register.tsx
+    })->name('register');
+});
+
 // ROTA DO DASHBOARD (AQUI CARREGAMOS OS DADOS)
 Route::get('/dashboard', function (Request $request) {
     // 1. Começa a query de tarefas SÓ DO USUÁRIO LOGADO
