@@ -226,10 +226,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
     const handleDeadlineFilterChange: ChangeEventHandler<HTMLInputElement> = (e) => { setFilterDeadline(e.target.value); };
 
     return (
-        <AuthenticatedLayout
-           title="Dashboard"
-           description="Gerencie suas tarefas aqui."
-        >
+        <AuthenticatedLayout>
             <Head title="Dashboard" />
 
             <div className="py-12">

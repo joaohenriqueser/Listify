@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TaskController; // <-- ADICIONE
-use App\Models\Task; // <-- ADICIONE
-use Illuminate\Support\Facades\Auth; // <-- ADICIONE
-use Illuminate\Http\Request; // <-- ADICIONE
+use App\Http\Controllers\TaskController; 
+use App\Http\Controllers\WeatherController; 
+use App\Models\Task; 
+use Illuminate\Support\Facades\Auth; 
+use Illuminate\Http\Request; // Importar Request para os filtros
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,67 +14,63 @@ use Inertia\Inertia;
 |--------------------------------------------------------------------------
 | Rotas Web
 |--------------------------------------------------------------------------
+|
+| Estas rotas são carregadas pelo seu RouteServiceProvider e são 
+| a base de navegação do seu aplicativo Inertia (React).
+|
 */
 
-// Rota de Boas-vindas (Padrão do Breeze)
+// Rota de Boas-vindas (Padrão do instalador)
 Route::get('/', function () {
-    return Inertia::render('welcome', [
+    return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-})->name('home');
+})->name('home'); // Nomeado como 'home' para evitar erros de link no frontend
 
-Route::middleware('guest')->group(function () {
-    // Rota para MOSTRAR a página de login
-    Route::get('login', function () {
-        return Inertia::render('auth/login'); // Carrega o seu arquivo login.tsx
-    })->name('login');
-
-    // Rota para MOSTRAR a página de registro
-    Route::get('register', function () {
-        return Inertia::render('auth/register'); // Carrega o seu arquivo register.tsx
-    })->name('register');
-});
-
-// ROTA DO DASHBOARD (AQUI CARREGAMOS OS DADOS)
+// --- ROTA DASHBOARD (REQUISITO 2 - LISTAGEM E FILTROS) ---
 Route::get('/dashboard', function (Request $request) {
-    // 1. Começa a query de tarefas SÓ DO USUÁRIO LOGADO
+    
+    // 1. Inicia a query de tarefas SÓ DO USUÁRIO LOGADO
     $query = Auth::user()->tasks();
 
-    // 2. Lógica de FILTROS (Requisito 2)
-    // Filtro por Status (ex: /dashboard?status=pending)
-    if ($request->filled('status')) { // filled() ignora 'all' ou vazio
+    // 2. Lógica de FILTROS
+    if ($request->filled('status') && $request->status !== 'all') {
         $query->where('status', $request->status);
     }
     
-    // Filtro por Prazo (ex: /dashboard?deadline=2025-10-30)
     if ($request->filled('deadline')) {
-         $query->whereDate('deadline', $request->deadline);
+         // Filtra pela data exata
+         $query->whereDate('deadline', $request->deadline); 
     }
 
-    // 3. Busca os dados
+    // 3. Busca os dados ordenados
     $tasks = $query->orderBy('deadline', 'asc')->get();
 
-    return Inertia::render('dashboard', [
+    // 4. Renderiza o componente React 'Dashboard' e envia os dados
+    return Inertia::render('Dashboard', [
         'tasks' => $tasks,
-        'filters' => $request->only(['status', 'deadline']), // Envia os filtros de volta
+        'filters' => $request->only(['status', 'deadline']), // Envia os filtros de volta para manter o estado do React
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard'); // Protegido por login
 
-// ROTAS DE PERFIL E CRUD (PROTEGIDAS)
+// ROTAS PROTEGIDAS (CRUD, CLIMA e PERFIL)
 Route::middleware('auth')->group(function () {
-    // Rotas de Perfil (Padrão do Breeze)
+    
+    // Rotas de Perfil (Padrão do instalador)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/weather', [WeatherController::class, 'getWeather'])->name('weather.get');
 
-    // --- ROTAS DO CRUD DE TAREFAS ---
-    // Cria as rotas:
-    // POST /tasks -> TaskController@store (tasks.store)
-    // PUT /tasks/{task} -> TaskController@update (tasks.update)
-    // DELETE /tasks/{task} -> TaskController@destroy (tasks.destroy)
+    // --- ROTAS DO CRUD DE TAREFAS (REQUISITO 2) ---
+    // tasks.store, tasks.update, tasks.destroy
     Route::resource('tasks', TaskController::class)->only(['store', 'update', 'destroy']);
+
+    // --- ROTA DA API DE CLIMA (REQUISITO 3) ---
+    Route::post('/weather', [WeatherController::class, 'getWeather'])->name('weather.get');
 });
+
+// Inclui as rotas de autenticação (Login, Registro, Logout, etc.) que estão em auth.php
+require __DIR__.'/auth.php';
