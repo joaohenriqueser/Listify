@@ -32,8 +32,9 @@ Este projeto combina o poder do Laravel no backend com a reatividade do React no
     * MySQL
     * Laravel Fortify/Sanctum (Autenticação de Sessão para SPA)
 * **Frontend:**
-    * React (com TypeScript / TSX)
-    * Inertia.js (A "cola" que conecta Laravel e React)
+    * JavaScript (ES6+) / TypeScript (TSX):** Linguagem principal do frontend.
+    * React: Biblioteca principal para a construção da interface de usuário (UI).
+    * Inertia.js (Conecta Laravel e React)
     * Vite (Compilador de assets)
     * TailwindCSS (Design e UI)
 * **Ferramentas Adicionais:**
@@ -56,7 +57,7 @@ Siga os passos abaixo para rodar o projeto na sua máquina local.
 
 1.  **Clonar o repositório:**
     ```bash
-    git clone [SEU LINK DO GITHUB AQUI]
+    git clone [https://github.com/joaohenriqueser/projeto-todo-list]
     cd toDoList
     ```
 
