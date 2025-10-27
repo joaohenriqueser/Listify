@@ -33,7 +33,7 @@ class TaskController extends Controller
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
             'deadline' => 'sometimes|required|date',
-            'status' => ['sometimes|required', Rule::in(['pending', 'in_progress', 'completed'])],
+            'status' => ['sometimes|required', Rule::in(['pending', 'in_progress'])],
         ]);
         $task->update($validatedData);
         return redirect()->route('dashboard');
