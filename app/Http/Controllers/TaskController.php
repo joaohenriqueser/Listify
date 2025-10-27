@@ -19,7 +19,7 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'deadline' => 'required|date',
-            'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])],
+            'status' => ['required', Rule::in(['pending', 'in_progress'])],
         ]);
         Auth::user()->tasks()->create($validatedData);
         return redirect()->route('dashboard'); 
@@ -30,10 +30,10 @@ class TaskController extends Controller
         $this->authorize('update', $task); 
 
         $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'deadline' => 'required|date',
-            'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])],
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|nullable|string',
+            'deadline' => 'sometimes|required|date',
+            'status' => ['sometimes|required', Rule::in(['pending', 'in_progress', 'completed'])],
         ]);
         $task->update($validatedData);
         return redirect()->route('dashboard');
