@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
@@ -33,7 +33,7 @@ Route::get('/dashboard', function (Request $request) {
 
     $tasks = $query->orderBy('deadline', 'asc')->get();
 
-    return Inertia::render('Dashboard', [
+    return Inertia::render('dashboard', [
         'tasks' => $tasks,
         'filters' => $request->only(['status', 'deadline']), 
     ]);
