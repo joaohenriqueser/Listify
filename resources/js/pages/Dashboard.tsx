@@ -366,7 +366,12 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                             <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>Editar</Button>
                                                         </DialogTrigger>
                                                         <DialogContent className="sm:max-w-[625px]">
-                                                            <DialogHeader><DialogTitle>Editar Tarefa</DialogTitle></DialogHeader>
+                                                            <DialogHeader>
+                                                                <DialogTitle>Editar Tarefa</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Ajuste os detalhes da sua tarefa. Clique em "Salvar Alterações" quando terminar.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
                                                             {taskToEdit?.id === task.id && <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />}
                                                         </DialogContent>
                                                     </Dialog>
