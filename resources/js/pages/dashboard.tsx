@@ -1,19 +1,25 @@
-// Em: resources/js/pages/Dashboard.tsx
-
 import React, { useState, useEffect, FormEventHandler, ChangeEventHandler, useCallback } from 'react';
-import AuthenticatedLayout from '../layouts/auth-layout'; // Caminho e nome corrigidos
+import AuthenticatedLayout from '../layouts/auth-layout'; 
 import { Head, useForm, router } from '@inertiajs/react';
-import { route } from 'ziggy-js'; 
 import axios from 'axios';
 
-// --- IMPORTS DOS COMPONENTES UI (Caminhos e casing corrigidos) ---
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Textarea } from '../components/ui/textarea'; // Componente criado
+import { Textarea } from '../components/ui/textarea'; 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import InputError from '../components/input-error'; // Caminho e nome corrigidos
+import InputError from '../components/input-error'; 
+
+
+const safeRoute = (name: string, params?: unknown): string => {
+    if (typeof window.route === 'function') {
+        //@ts-expect-error - Ignora o problema de tipagem complexa do Ziggy
+        return window.route(name, params).toString();
+    }
+    return `/${name}`;
+};
+
 
 // --- TIPAGEM (TypeScript) ---
 interface Task {
@@ -29,7 +35,6 @@ interface Task {
 
 // Tipagem das props recebidas pelo Inertia
 interface PageProps {
-    // auth: object; // auth é passado, mas não usamos diretamente no Dashboard
     tasks: Task[];
     filters: {
         status?: string;
@@ -62,7 +67,6 @@ interface TaskFormData {
 
 // --- COMPONENTE DO FORMULÁRIO DE EDIÇÃO ---
 const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => void }) => {
-    // Usa a tipagem TaskFormData
     const { data, setData, put, processing, errors, reset } = useForm<TaskFormData>({
         title: task?.title ?? '',
         description: task?.description ?? '',
@@ -70,7 +74,6 @@ const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => voi
         status: task?.status ?? 'pending',
     });
 
-    // useEffect com @ts-expect-error para a sobrecarga do reset
     useEffect(() => {
         if (task && typeof task === 'object') {
             // @ts-expect-error - Inertia's reset function overload typing issue
@@ -86,7 +89,7 @@ const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => voi
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         if (!task) return;
-        put(route('tasks.update', task.id), {
+        put(`http://${window.location.host}/tasks/${task.id}`, {
             preserveScroll: true,
             onSuccess: () => onClose(),
         });
@@ -146,14 +149,13 @@ const WeatherWidget = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // useCallback para otimização
     const fetchWeather = useCallback(async (cityName: string) => {
         if (!cityName) { setError('Por favor, digite uma cidade.'); setLoading(false); return; }
         setLoading(true); setError(''); setWeather(null);
         try {
-            const response = await axios.post(route('weather.get'), { city: cityName });
+            const response = await axios.post(`http://${window.location.host}/weather`, { city: cityName });
             setWeather(response.data as WeatherData);
-        } catch (err: unknown) { // Usa unknown
+        } catch (err: unknown) { 
             let errorMessage = 'Erro ao buscar clima.';
             if (axios.isAxiosError(err) && err.response?.data?.error) {
                 errorMessage = err.response.data.error;
@@ -191,11 +193,10 @@ const WeatherWidget = () => {
 // --- COMPONENTE PRINCIPAL DO DASHBOARD ---
 export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
 
-    // Usa a tipagem TaskFormData
     const createForm = useForm<TaskFormData>({ title: '', description: '', deadline: '', status: 'pending' });
     const submitCreate: FormEventHandler = (e) => {
         e.preventDefault();
-        createForm.post(route('tasks.store'), { preserveScroll: true, onSuccess: () => createForm.reset() });
+        createForm.post(`http://${window.location.host}/tasks`, { preserveScroll: true, onSuccess: () => createForm.reset() });
     };
 
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -205,7 +206,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
 
     const handleDelete = (task: Task) => {
         if (confirm(`Tem certeza que deseja excluir a tarefa "${task.title}"?`)) {
-            router.delete(route('tasks.destroy', task.id), { preserveScroll: true });
+            router.delete(`http://${window.location.host}/tasks/${task.id}`, { preserveScroll: true });
         }
     };
 
@@ -217,7 +218,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
             const currentFilters = { status: filterStatus, deadline: filterDeadline };
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const activeFilters = Object.fromEntries(Object.entries(currentFilters).filter(([_, v]) => v != null && v !== '' && v !== 'all'));
-            router.get(route('dashboard'), activeFilters, { preserveState: true, replace: true, preserveScroll: true });
+            router.get(safeRoute('dashboard'), activeFilters, { preserveState: true, replace: true, preserveScroll: true });
         }, 300);
         return () => clearTimeout(handler);
     }, [filterStatus, filterDeadline]);
@@ -324,7 +325,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                     <h4 className="font-semibold text-lg text-gray-800">{task.title}</h4>
                                                     {task.description && <p className="text-sm text-gray-600 break-words mt-1">{task.description}</p>}
                                                     <span className="text-xs text-gray-500 block mt-1">
-                                                        Prazo: {new Date(task.deadline).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                                        Prazo: {new Date(task.deadline).toLocaleString('pt-BR', {timeZone: 'UTC'})}
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0 self-start sm:self-center">
@@ -336,10 +337,22 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                         task.status === 'in_progress' ? 'Em Andamento' :
                                                         'Concluída'}
                                                     </span>
-                                                    <DialogTrigger asChild>
-                                                        <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>Editar</Button>
-                                                    </DialogTrigger>
-                                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(task)}>Excluir</Button>
+                                                    <Dialog open={isEditDialogOpen && taskToEdit?.id === task.id} onOpenChange={setIsEditDialogOpen}>
+                                                        <DialogTrigger asChild>
+                                                            <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>Editar</Button>
+                                                        </DialogTrigger>
+                                                        <DialogContent className="sm:max-w-[625px]">
+                                                            <DialogHeader><DialogTitle>Editar Tarefa</DialogTitle></DialogHeader>
+                                                            {taskToEdit?.id === task.id && <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />}
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                    <Button 
+                                                        variant="destructive" 
+                                                        size="sm" 
+                                                        onClick={() => handleDelete(task)}
+                                                    >
+                                                        Excluir
+                                                    </Button>
                                                 </div>
                                             </div>
                                         ))

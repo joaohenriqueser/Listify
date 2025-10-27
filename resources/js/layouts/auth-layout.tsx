@@ -5,7 +5,6 @@ import { Link, usePage } from '@inertiajs/react';
 import { Button } from '../components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 
-// --- TIPAGEM SIMPLIFICADA (Para satisfazer o usePage) ---
 interface PageSharedProps {
     auth: { user: { id: number; name: string; email: string; }; };
     zigziggy: { location: Location, [key: string]: unknown };
@@ -13,12 +12,10 @@ interface PageSharedProps {
     [key: string]: unknown;
 }
 
-// Interface para as props do layout (Sem title ou description)
 interface AuthenticatedLayoutProps extends PropsWithChildren {
-    header?: ReactNode; // Apenas o header
+    header?: ReactNode; 
 }
 
-// Função de Rota Segura (Mantida)
 const getRoute = (name: string, params?: Record<string, unknown>): string => {
     if (typeof window.route === 'function') {
         return window.route(name, params).toString(); 
@@ -27,7 +24,6 @@ const getRoute = (name: string, params?: Record<string, unknown>): string => {
 };
 
 export default function AuthenticatedLayout({ header, children }: AuthenticatedLayoutProps) {
-    // TIPAGEM CORRIGIDA para usar a interface e evitar 'any'
     const { props } = usePage<PageSharedProps>();
     const auth = props.auth;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -38,7 +34,6 @@ export default function AuthenticatedLayout({ header, children }: AuthenticatedL
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
-                            {/* Logo: Usando texto simples e SVG (sem o ApplicationLogo que não existe) */}
                             <div className="shrink-0 flex items-center">
                                 <Link href={getRoute('dashboard')}>
                                     <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">TO-DO List</span>
@@ -62,11 +57,7 @@ export default function AuthenticatedLayout({ header, children }: AuthenticatedL
                                         <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem asChild>
-                                             <Link href={getRoute('profile.edit')}>Perfil</Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem asChild>
-                                            <Link href={getRoute('logout')} method="post" as="button" className="w-full text-left">
+                                            <Link href={`http://${window.location.host}/logout`} method="post" as="button" className="w-full text-left">
                                                 Sair
                                             </Link>
                                         </DropdownMenuItem>
@@ -97,8 +88,8 @@ export default function AuthenticatedLayout({ header, children }: AuthenticatedL
                             <div className="font-medium text-sm text-gray-500">{auth.user.email}</div>
                         </div>
                         <div className="mt-3 space-y-1">
-                            <Link href={getRoute('profile.edit')} className="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out"> Perfil </Link>
-                            <Link href={getRoute('logout')} method="post" as="button" className="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out"> Sair </Link>
+                            <Link href={`http://${window.location.host}/profile`} className="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out"> Perfil </Link>
+                            <Link href={`http://${window.location.host}/logout`} method="post" as="button" className="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out"> Sair </Link>
                         </div>
                     </div>
                 </div>
