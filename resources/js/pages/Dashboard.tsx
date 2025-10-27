@@ -211,7 +211,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
     };
 
     const handleMarkAsCompleted = (task: Task) => {
-        router.patch(safeRoute('tasks.update', task.id), {
+        router.patch(`https://${window.location.host}/tasks/${task.id}`, {
             status: 'completed',
         }, {
             preserveScroll: true, // Mantém a posição da tela
