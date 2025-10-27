@@ -324,9 +324,18 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                 <div className="flex-grow mb-3 sm:mb-0 sm:mr-4">
                                                     <h4 className="font-semibold text-lg text-gray-800">{task.title}</h4>
                                                     {task.description && <p className="text-sm text-gray-600 break-words mt-1">{task.description}</p>}
-                                                    <span className="text-xs text-gray-500 block mt-1">
-                                                        Prazo: {new Date(task.deadline).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
-                                                    </span>
+                                                    {/* --- LÓGICA CONDICIONAL PARA O PRAZO --- */}
+                                                    {task.status === 'completed' ? (
+                                                        // 1. Se a tarefa estiver 'Concluída', mostra a data de conclusão (updated_at)
+                                                        <span className="text-xs text-green-600 font-medium block mt-1">
+                                                            Concluído em: {new Date(task.updated_at).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                                        </span>
+                                                    ) : (
+                                                        // 2. Senão, mostra o prazo (deadline)
+                                                        <span className="text-xs text-gray-500 block mt-1">
+                                                            Prazo: {new Date(task.deadline).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0 self-start sm:self-center">
                                                     <span className={`inline-block px-2 py-1 leading-none rounded-full text-white text-xs font-semibold ${
