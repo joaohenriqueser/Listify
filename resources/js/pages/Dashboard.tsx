@@ -64,6 +64,7 @@ interface TaskFormData {
     status: 'pending' | 'in_progress' | 'completed';
 }
 
+const today = new Date().toISOString().split('T')[0];
 
 // --- COMPONENTE DO FORMULÁRIO DE EDIÇÃO ---
 const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => void }) => {
@@ -109,7 +110,7 @@ const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => voi
             </div>
             <div>
                 <Label htmlFor="edit_deadline">Prazo</Label>
-                <Input id="edit_deadline" type="date" className="mt-1 block w-full" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} required />
+                <Input id="edit_deadline" type="date" className="mt-1 block w-full" value={data.deadline} onChange={(e) => setData('deadline', e.target.value)} required min={today} />
                 <InputError message={errors.deadline} className="mt-2" />
             </div>
             <div>
@@ -260,7 +261,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                         </div>
                                         <div>
                                             <Label htmlFor="deadline">Prazo</Label>
-                                            <Input id="deadline" type="date" value={createForm.data.deadline} onChange={e => createForm.setData('deadline', e.target.value)} required className="mt-1 block w-full"/>
+                                            <Input id="deadline" type="date" value={createForm.data.deadline} onChange={e => createForm.setData('deadline', e.target.value)} required className="mt-1 block w-full" min={today}/>
                                             <InputError message={createForm.errors.deadline} className="mt-2" />
                                         </div>
                                         <div>
