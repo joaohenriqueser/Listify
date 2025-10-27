@@ -325,7 +325,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                     <h4 className="font-semibold text-lg text-gray-800">{task.title}</h4>
                                                     {task.description && <p className="text-sm text-gray-600 break-words mt-1">{task.description}</p>}
                                                     <span className="text-xs text-gray-500 block mt-1">
-                                                        Prazo: {new Date(task.deadline).toLocaleString('pt-BR', {timeZone: 'UTC'})}
+                                                        Prazo: {new Date(task.deadline).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
                                                     </span>
                                                 </div>
                                                 <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0 self-start sm:self-center">

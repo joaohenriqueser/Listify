@@ -1,57 +1,44 @@
-# Teste Prático - Desenvolvedor PHP (To-Do List)
+# Projeto To-Do List (Gestão de Tarefas)
 
-Este projeto é uma solução completa para o teste prático de Desenvolvedor PHP, focado na criação de um sistema de gestão de tarefas ("To-Do List") utilizando um stack moderno com Laravel e React.
+Bem-vindo ao projeto To-Do List! Este é um aplicativo web completo (Full Stack) construído com Laravel e React, projetado para ajudar usuários a organizar suas tarefas diárias de forma eficiente e moderna.
 
-O sistema permite o cadastro de usuários, login/logout, gerenciamento completo de tarefas (CRUD), filtros dinâmicos e integração com uma API de previsão do tempo (OpenWeatherMap).
+O sistema permite que os usuários se registrem, gerenciem suas tarefas através de uma interface limpa (CRUD completo) e também consultem a previsão do tempo atual para planejar seu dia.
 
-**Link para o Projeto Publicado:** `[INSERIR SEU LINK DO VERCEL OU RAILWAY AQUI]`
-
----
-
-## Funcionalidades Implementadas
-
-O projeto atende a todos os requisitos obrigatórios e inclui diferenciais:
-
-* **Autenticação (Requisito 1):**
-    * Cadastro de novos usuários (Nome, E-mail, Senha).
-    * Login de usuários existentes.
-    * Logout (no menu dropdown do usuário).
-    * Proteção de rotas (só é possível acessar o Dashboard após o login).
-    * Páginas de "Esqueci minha Senha" e "Resetar Senha" (via e-mail no log).
-* **Gerenciamento de Tarefas (Requisito 2):**
-    * **Criar:** Formulário para adicionar novas tarefas.
-    * **Listar:** Lista de tarefas do usuário logado.
-    * **Editar:** Abertura de um Dialog (Modal) para edição da tarefa.
-    * **Excluir:** Botão de exclusão com confirmação.
-* **Filtros Dinâmicos (Requisito 2):**
-    * Filtragem da lista de tarefas por Status (Pendente, Em Andamento, Concluída).
-    * Filtragem da lista de tarefas por Prazo (Data).
-* **Lógica de Exibição (Customizada):**
-    * Se uma tarefa está "Concluída", o prazo é substituído pela data em que foi concluída.
-* **Consumo de API Externa (Requisito 3):**
-    * Widget de Previsão do Tempo que busca dados da API **OpenWeatherMap** com base no nome da cidade digitado pelo usuário.
-* **Interface (Requisito 4):**
-    * Interface moderna e responsiva construída com **React**, **Inertia.js** e **TailwindCSS** (usando componentes `ui` baseados em Shadcn/Radix).
+**Link para o Projeto Publicado:** `[COLE SEU LINK DO VERCEL/RAILWAY AQUI]`
 
 ---
 
-## Tecnologias Utilizadas (Stack)
+## Funcionalidades Principais
 
-Este projeto utiliza um stack moderno para alta performance e organização de código.
+* **Autenticação de Usuários:** Sistema completo de registro e login usando Laravel Fortify/Sanctum. As rotas são protegidas, exigindo que o usuário esteja autenticado para acessar o painel.
+* **Gerenciamento de Tarefas (CRUD):**
+    * **Criar:** Formulário intuitivo para adicionar novas tarefas.
+    * **Listar:** Visualização de todas as tarefas pendentes ou concluídas do usuário logado.
+    * **Editar:** Interface em Dialog (modal) para atualizar tarefas existentes.
+    * **Excluir:** Opção de remover tarefas.
+* **Filtros Dinâmicos:** A lista de tarefas pode ser filtrada instantaneamente por **Status** (Pendente, Em Andamento, Concluída) ou por **Prazo (Data)**.
+* **Integração com API Externa:** Um widget no dashboard consome a API **OpenWeatherMap**, permitindo ao usuário buscar a previsão do tempo atual para qualquer cidade.
+* **Interface Responsiva:** Construído com **TailwindCSS** e componentes `ui` (baseados em Shadcn/Radix), garantindo uma experiência de usuário limpa e moderna em desktops e dispositivos móveis.
+
+---
+
+## Tecnologias Utilizadas
+
+Este projeto combina o poder do Laravel no backend com a reatividade do React no frontend.
 
 * **Backend:**
-    * PHP 8.2+
+    * PHP 8.4+
     * Laravel 11+
-    * Fortify/Sanctum (Para autenticação de sessão)
     * MySQL
+    * Laravel Fortify/Sanctum (Autenticação de Sessão para SPA)
 * **Frontend:**
     * React (com TypeScript / TSX)
-    * Inertia.js (A "cola" entre o Laravel e o React)
-    * Vite (Compilador de frontend)
-    * TailwindCSS (Estilização)
-* **Outras Ferramentas:**
-    * Ziggy (Para uso de rotas nomeadas do Laravel no JavaScript)
-    * Axios (Para chamadas de API de Clima)
+    * Inertia.js (A "cola" que conecta Laravel e React)
+    * Vite (Compilador de assets)
+    * TailwindCSS (Design e UI)
+* **Ferramentas Adicionais:**
+    * Ziggy (Para uso de rotas nomeadas do Laravel no React)
+    * Axios (Para requisições de API de clima)
 
 ---
 
@@ -60,9 +47,9 @@ Este projeto utiliza um stack moderno para alta performance e organização de c
 Siga os passos abaixo para rodar o projeto na sua máquina local.
 
 **Pré-requisitos:**
-* PHP 8.2+
+* PHP (v8.2+)
 * Composer
-* Node.js (npm)
+* Node.js & npm
 * Servidor MySQL (Laragon, XAMPP, etc.)
 
 **Passos:**
@@ -87,11 +74,10 @@ Siga os passos abaixo para rodar o projeto na sua máquina local.
         ```bash
         php artisan key:generate
         ```
-    * Abra o arquivo `.env` e configure seu banco de dados:
+    * Abra o arquivo `.env` e configure seu banco de dados MySQL:
         ```env
         DB_CONNECTION=mysql
         DB_HOST=127.0.0.1
-        DB_PORT=3306
         DB_DATABASE=toDoList
         DB_USERNAME=root
         DB_PASSWORD=
@@ -114,6 +100,7 @@ Siga os passos abaixo para rodar o projeto na sua máquina local.
     ```
 
 6.  **Gerar o mapa de rotas (Ziggy):**
+    * (Se o Ziggy não estiver instalado, rode `composer require tightenco/ziggy` primeiro).
     ```bash
     php artisan ziggy:generate
     ```
