@@ -16,6 +16,7 @@ export default defineConfig({
                 plugins: ['babel-plugin-react-compiler'],
             },
         }),
+        base: './',
         tailwindcss(),
         wayfinder({
             formVariants: true,
