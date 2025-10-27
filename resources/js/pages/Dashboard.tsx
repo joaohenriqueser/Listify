@@ -89,7 +89,7 @@ const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => voi
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         if (!task) return;
-        put(`http://${window.location.host}/tasks/${task.id}`, {
+        put(`https://${window.location.host}/tasks/${task.id}`, {
             preserveScroll: true,
             onSuccess: () => onClose(),
         });
@@ -153,7 +153,7 @@ const WeatherWidget = () => {
         if (!cityName) { setError('Por favor, digite uma cidade.'); setLoading(false); return; }
         setLoading(true); setError(''); setWeather(null);
         try {
-            const response = await axios.post(`http://${window.location.host}/weather`, { city: cityName });
+            const response = await axios.post(`https://${window.location.host}/weather`, { city: cityName });
             setWeather(response.data as WeatherData);
         } catch (err: unknown) { 
             let errorMessage = 'Erro ao buscar clima.';
@@ -196,7 +196,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
     const createForm = useForm<TaskFormData>({ title: '', description: '', deadline: '', status: 'pending' });
     const submitCreate: FormEventHandler = (e) => {
         e.preventDefault();
-        createForm.post(`http://${window.location.host}/tasks`, { preserveScroll: true, onSuccess: () => createForm.reset() });
+        createForm.post(`https://${window.location.host}/tasks`, { preserveScroll: true, onSuccess: () => createForm.reset() });
     };
 
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -206,7 +206,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
 
     const handleDelete = (task: Task) => {
         if (confirm(`Tem certeza que deseja excluir a tarefa "${task.title}"?`)) {
-            router.delete(`http://${window.location.host}/tasks/${task.id}`, { preserveScroll: true });
+            router.delete(`https://${window.location.host}/tasks/${task.id}`, { preserveScroll: true });
         }
     };
 
