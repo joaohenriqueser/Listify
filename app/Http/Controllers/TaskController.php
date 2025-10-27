@@ -30,10 +30,10 @@ class TaskController extends Controller
         $this->authorize('update', $task); 
 
         $validatedData = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|nullable|string',
-            'deadline' => 'sometimes|required|date',
-            'status' => ['sometimes|required', Rule::in(['pending', 'in_progress'])],
+            'title'       => ['sometimes', 'required', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string'],
+            'deadline'    => ['sometimes', 'required', 'date'],
+            'status'      => ['sometimes', 'required', Rule::in(['pending', 'in_progress', 'completed'])],
         ]);
         $task->update($validatedData);
         return redirect()->route('dashboard');
