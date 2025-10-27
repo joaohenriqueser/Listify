@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react'; 
-import { Head, Link, usePage, router } from '@inertiajs/react'; 
+import React, { useEffect } from 'react'; // <-- 1. IMPORTE useEffect
+import { Head, Link, usePage, router } from '@inertiajs/react'; // <-- 2. IMPORTE router
+// import { route } from 'ziggy-js'; // Não precisamos mais importar route diretamente
 
-// --- Função de Rota Segura (Copiada ou Importada) ---
+// --- Função de Rota Segura (A CHAVE) ---
 const safeRoute = (name: string, params?: unknown): string => {
     if (typeof window.route === 'function') {
         // @ts-expect-error - Ignora o problema de tipagem complexa do Ziggy
         return window.route(name, params).toString();
     }
+    // Fallback para prevenir o crash
     return `/${name}`;
 };
-// ---------------------------------------------------
+// ----------------------------------------
 
 // --- Tipagem de Props ---
 interface WelcomeProps {
@@ -31,9 +33,10 @@ export default function Welcome({ canLogin, canRegister }: WelcomeProps) {
 
     // --- 3. LÓGICA DE REDIRECIONAMENTO NO useEffect ---
     useEffect(() => {
+        // Se o usuário estiver logado, redireciona para o dashboard
         if (isLoggedIn) {
             // Usamos router.visit() com a rota segura
-            router.visit(safeRoute('dashboard'), { replace: true }); // replace: true evita que o Welcome fique no histórico
+            router.visit(safeRoute('dashboard'), { replace: true }); 
         }
     }, [isLoggedIn]); // Roda o efeito sempre que o estado de login mudar
     // ----------------------------------------------------
