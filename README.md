@@ -4,8 +4,6 @@ Bem-vindo ao projeto To-Do List! Este é um aplicativo web completo (Full Stack)
 
 O sistema permite que os usuários se registrem, gerenciem suas tarefas através de uma interface limpa (CRUD completo) e também consultem a previsão do tempo atual para planejar seu dia.
 
-**Link para o Projeto Publicado:** `[COLE SEU LINK DO VERCEL/RAILWAY AQUI]`
-
 ---
 
 ## Funcionalidades Principais
