@@ -127,7 +127,6 @@ const EditTaskForm = ({ task, onClose }: { task: Task | null, onClose: () => voi
                     <SelectContent>
                         <SelectItem value="pending">Pendente</SelectItem>
                         <SelectItem value="in_progress">Em Andamento</SelectItem>
-                        <SelectItem value="completed">Concluída</SelectItem>
                     </SelectContent>
                 </Select>
                 <InputError message={errors.status} className="mt-2" />
@@ -211,6 +210,13 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
         }
     };
 
+    const handleMarkAsCompleted = (task: Task) => {
+        router.patch(safeRoute('tasks.update', task.id), {
+            status: 'completed',
+        }, {
+            preserveScroll: true, // Mantém a posição da tela
+        });
+    };
     const [filterStatus, setFilterStatus] = useState(filters.status || '');
     const [filterDeadline, setFilterDeadline] = useState(filters.deadline || '');
 
@@ -346,6 +352,15 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                         task.status === 'in_progress' ? 'Em Andamento' :
                                                         'Concluída'}
                                                     </span>
+                                                    {task.status !== 'completed' && (
+                                                        <Button 
+                                                            size="sm" 
+                                                            className="bg-green-600 hover:bg-green-700 text-white" // Estilo verde
+                                                            onClick={() => handleMarkAsCompleted(task)}
+                                                        >
+                                                            Concluir
+                                                        </Button>
+                                                    )}
                                                     <Dialog open={isEditDialogOpen && taskToEdit?.id === task.id} onOpenChange={setIsEditDialogOpen}>
                                                         <DialogTrigger asChild>
                                                             <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>Editar</Button>
