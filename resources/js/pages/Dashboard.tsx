@@ -276,7 +276,6 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                                 <SelectContent>
                                                     <SelectItem value="pending">Pendente</SelectItem>
                                                     <SelectItem value="in_progress">Em Andamento</SelectItem>
-                                                    <SelectItem value="completed">Concluída</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <InputError message={createForm.errors.status} className="mt-2" />
