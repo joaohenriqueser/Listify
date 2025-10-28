@@ -222,13 +222,19 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            const currentFilters = { status: filterStatus, deadline: filterDeadline };
+            const currentFilters: { status: string, deadline?: string } = {
+                status: filterStatus
+            };
+            // Só adiciona o 'deadline' ao filtro se o botão estiver ativo E houver uma data
+            if (deadlineFilterActive && filterDeadline) {
+                currentFilters.deadline = filterDeadline;
+            }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const activeFilters = Object.fromEntries(Object.entries(currentFilters).filter(([_, v]) => v != null && v !== '' && v !== 'all'));
             router.get(safeRoute('dashboard'), activeFilters, { preserveState: true, replace: true, preserveScroll: true });
         }, 300);
         return () => clearTimeout(handler);
-    }, [filterStatus, filterDeadline]);
+    }, [filterStatus, filterDeadline, deadlineFilterActive]);
 
     const handleStatusFilterChange = (value: string) => { setFilterStatus(value === 'all' ? '' : value); };
     const handleDeadlineFilterChange: ChangeEventHandler<HTMLInputElement> = (e) => { setFilterDeadline(e.target.value); };
@@ -315,11 +321,31 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                                         </Select>
                                     </div>
                                     <div>
-                                        <Label htmlFor="filter_deadline">Filtrar por Prazo</Label>
-                                        <Input id="filter_deadline" name="deadline" type="date" value={filterDeadline} onChange={handleDeadlineFilterChange} className="mt-1 block w-full"/>
-                                    </div>
-                                </div>
-
+                                         {/* --- MUDANÇA AQUI 2: Adiciona o botão de Ativar/Desativar --- */}
+                                            <div className="flex justify-between items-center">
+                                                <Label htmlFor="filter_deadline">Filtrar por Prazo</Label>
+                                                <Button 
+                                                    variant={deadlineFilterActive ? "secondary" : "ghost"} 
+                                                    size="sm"
+                                                    type="button" // Impede o submit do formulário
+                                                    onClick={() => setDeadlineFilterActive(!deadlineFilterActive)}
+                                                    className="h-7 text-xs" // Deixa o botão menor
+                                                >
+                                                    {deadlineFilterActive ? "Desativar" : "Ativar"}
+                                                </Button>
+                                            </div>
+                                            <Input 
+                                                id="filter_deadline" 
+                                                name="deadline" 
+                                                type="date" 
+                                                value={filterDeadline} 
+                                                onChange={handleDeadlineFilterChange} 
+                                                className="mt-1 block w-full"
+                                                disabled={!deadlineFilterActive} // <-- Desativa o input se o filtro estiver inativo
+                                            />
+                                            {/* -------------------------------------------------------- */}
+                                            </div>
+                                    </div>                
                                 {/* Lista */}
                                 <div className="space-y-4">
                                     {tasks.length === 0 ? (
