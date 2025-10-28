@@ -454,6 +454,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                     </Dialog>
                 </div> 
             </div> 
+        </div>
         </AuthenticatedLayout> 
     );
 }
