@@ -219,6 +219,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
     };
     const [filterStatus, setFilterStatus] = useState(filters.status || '');
     const [filterDeadline, setFilterDeadline] = useState(filters.deadline || '');
+    const [deadlineFilterActive, setDeadlineFilterActive] = useState(false);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -304,129 +305,150 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
 
                         {/* Coluna Direita */}
                         <div className="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div className="p-6 text-gray-900">
-                                <h3 className="text-lg font-semibold mb-4 text-gray-800">Sua Lista</h3>
-                                {/* Filtros */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 pb-6 border-b">
-                                    <div>
-                                        <Label htmlFor="filter_status">Filtrar por Status</Label>
-                                        <Select value={filterStatus} onValueChange={handleStatusFilterChange}>
-                                             <SelectTrigger id="filter_status" className="mt-1 block w-full"><SelectValue placeholder="Todos" /></SelectTrigger>
-                                             <SelectContent>
-                                                 <SelectItem value="all">Todos</SelectItem>
-                                                 <SelectItem value="pending">Pendente</SelectItem>
-                                                 <SelectItem value="in_progress">Em Andamento</SelectItem>
-                                                 <SelectItem value="completed">Concluída</SelectItem>
-                                             </SelectContent>
-                                        </Select>
+                        <div className="p-6 text-gray-900">
+                            <h3 className="text-lg font-semibold mb-4 text-gray-800">Sua Lista</h3>
+                    
+                            {/* Filtros */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 pb-6 border-b">
+                                <div>
+                                    <Label htmlFor="filter_status">Filtrar por Status</Label>
+                                    <Select value={filterStatus} onValueChange={handleStatusFilterChange}>
+                                        <SelectTrigger id="filter_status" className="mt-1 block w-full">
+                                            <SelectValue placeholder="Todos" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Todos</SelectItem>
+                                            <SelectItem value="pending">Pendente</SelectItem>
+                                            <SelectItem value="in_progress">Em Andamento</SelectItem>
+                                            <SelectItem value="completed">Concluída</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                    
+                                <div>
+                                    {/* --- Botão de Ativar/Desativar --- */}
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="filter_deadline">Filtrar por Prazo</Label>
+                                        <Button 
+                                            variant={deadlineFilterActive ? "secondary" : "ghost"} 
+                                            size="sm"
+                                            type="button"
+                                            onClick={() => setDeadlineFilterActive(!deadlineFilterActive)}
+                                            className="h-7 text-xs"
+                                        >
+                                            {deadlineFilterActive ? "Desativar" : "Ativar"}
+                                        </Button>
                                     </div>
-                                    <div>
-                                         {/* --- MUDANÇA AQUI 2: Adiciona o botão de Ativar/Desativar --- */}
-                                            <div className="flex justify-between items-center">
-                                                <Label htmlFor="filter_deadline">Filtrar por Prazo</Label>
-                                                <Button 
-                                                    variant={deadlineFilterActive ? "secondary" : "ghost"} 
-                                                    size="sm"
-                                                    type="button" // Impede o submit do formulário
-                                                    onClick={() => setDeadlineFilterActive(!deadlineFilterActive)}
-                                                    className="h-7 text-xs" // Deixa o botão menor
+                    
+                                    <Input 
+                                        id="filter_deadline" 
+                                        name="deadline" 
+                                        type="date" 
+                                        value={filterDeadline} 
+                                        onChange={handleDeadlineFilterChange} 
+                                        className="mt-1 block w-full"
+                                        disabled={!deadlineFilterActive}
+                                    />
+                                </div>
+                            </div>
+                    
+                            {/* Lista */}
+                            <div className="space-y-4">
+                                {tasks.length === 0 ? (
+                                    <p className="text-gray-500 py-4 text-center">
+                                        Nenhuma tarefa encontrada {filterStatus || filterDeadline ? 'para os filtros selecionados' : ''}.
+                                    </p>
+                                ) : (
+                                    tasks.map((task: Task) => (
+                                        <div 
+                                            key={task.id} 
+                                            className="p-4 border rounded-lg flex flex-col sm:flex-row justify-between sm:items-start hover:shadow-md transition-shadow duration-150"
+                                        >
+                                            <div className="flex-grow mb-3 sm:mb-0 sm:mr-4">
+                                                <h4 className="font-semibold text-lg text-gray-800">{task.title}</h4>
+                                                {task.description && (
+                                                    <p className="text-sm text-gray-600 break-words mt-1">{task.description}</p>
+                                                )}
+                    
+                                                {/* --- Lógica condicional para o prazo --- */}
+                                                {task.status === 'completed' ? (
+                                                    <span className="text-xs text-green-600 font-medium block mt-1">
+                                                        Concluído em: {new Date(task.updated_at).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-xs text-gray-500 block mt-1">
+                                                        Prazo: {new Date(task.deadline).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                                                    </span>
+                                                )}
+                                            </div>
+                    
+                                            <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0 self-start sm:self-center">
+                                                <span
+                                                    className={`inline-block px-2 py-1 leading-none rounded-full text-white text-xs font-semibold ${
+                                                        task.status === 'pending'
+                                                            ? 'bg-yellow-500'
+                                                            : task.status === 'in_progress'
+                                                            ? 'bg-blue-500'
+                                                            : 'bg-green-500'
+                                                    }`}
                                                 >
-                                                    {deadlineFilterActive ? "Desativar" : "Ativar"}
+                                                    {task.status === 'pending'
+                                                        ? 'Pendente'
+                                                        : task.status === 'in_progress'
+                                                        ? 'Em Andamento'
+                                                        : 'Concluída'}
+                                                </span>
+                    
+                                                {task.status !== 'completed' && (
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-green-600 hover:bg-green-700 text-white"
+                                                        onClick={() => handleMarkAsCompleted(task)}
+                                                    >
+                                                        Concluir
+                                                    </Button>
+                                                )}
+                    
+                                                <Dialog open={isEditDialogOpen && taskToEdit?.id === task.id} onOpenChange={setIsEditDialogOpen}>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>
+                                                            Editar
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="sm:max-w-[625px]">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Editar Tarefa</DialogTitle>
+                                                            <DialogDescription>
+                                                                Ajuste os detalhes da sua tarefa. Clique em "Salvar Alterações" quando terminar.
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        {taskToEdit?.id === task.id && (
+                                                            <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />
+                                                        )}
+                                                    </DialogContent>
+                                                </Dialog>
+                    
+                                                <Button 
+                                                    variant="destructive" 
+                                                    size="sm" 
+                                                    onClick={() => handleDelete(task)}
+                                                >
+                                                    Excluir
                                                 </Button>
                                             </div>
-                                            <Input 
-                                                id="filter_deadline" 
-                                                name="deadline" 
-                                                type="date" 
-                                                value={filterDeadline} 
-                                                onChange={handleDeadlineFilterChange} 
-                                                className="mt-1 block w-full"
-                                                disabled={!deadlineFilterActive} // <-- Desativa o input se o filtro estiver inativo
-                                            />
-                                            {/* -------------------------------------------------------- */}
-                                            </div>
-                                    </div>                
-                                {/* Lista */}
-                                <div className="space-y-4">
-                                    {tasks.length === 0 ? (
-                                        <p className="text-gray-500 py-4 text-center">Nenhuma tarefa encontrada {filterStatus || filterDeadline ? 'para os filtros selecionados' : ''}.</p>
-                                    ) : (
-                                        tasks.map((task: Task) => (
-                                            <div key={task.id} className="p-4 border rounded-lg flex flex-col sm:flex-row justify-between sm:items-start hover:shadow-md transition-shadow duration-150">
-                                                <div className="flex-grow mb-3 sm:mb-0 sm:mr-4">
-                                                    <h4 className="font-semibold text-lg text-gray-800">{task.title}</h4>
-                                                    {task.description && <p className="text-sm text-gray-600 break-words mt-1">{task.description}</p>}
-                                                    {/* --- LÓGICA CONDICIONAL PARA O PRAZO --- */}
-                                                    {task.status === 'completed' ? (
-                                                        // 1. Se a tarefa estiver 'Concluída', mostra a data de conclusão (updated_at)
-                                                        <span className="text-xs text-green-600 font-medium block mt-1">
-                                                            Concluído em: {new Date(task.updated_at).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
-                                                        </span>
-                                                    ) : (
-                                                        // 2. Senão, mostra o prazo (deadline)
-                                                        <span className="text-xs text-gray-500 block mt-1">
-                                                            Prazo: {new Date(task.deadline).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0 self-start sm:self-center">
-                                                    <span className={`inline-block px-2 py-1 leading-none rounded-full text-white text-xs font-semibold ${
-                                                            task.status === 'pending' ? 'bg-yellow-500' :
-                                                            task.status === 'in_progress' ? 'bg-blue-500' :
-                                                            'bg-green-500'}`}>
-                                                       {task.status === 'pending' ? 'Pendente' :
-                                                        task.status === 'in_progress' ? 'Em Andamento' :
-                                                        'Concluída'}
-                                                    </span>
-                                                    {task.status !== 'completed' && (
-                                                        <Button 
-                                                            size="sm" 
-                                                            className="bg-green-600 hover:bg-green-700 text-white" // Estilo verde
-                                                            onClick={() => handleMarkAsCompleted(task)}
-                                                        >
-                                                            Concluir
-                                                        </Button>
-                                                    )}
-                                                    <Dialog open={isEditDialogOpen && taskToEdit?.id === task.id} onOpenChange={setIsEditDialogOpen}>
-                                                        <DialogTrigger asChild>
-                                                            <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>Editar</Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent className="sm:max-w-[625px]">
-                                                            <DialogHeader>
-                                                                <DialogTitle>Editar Tarefa</DialogTitle>
-                                                                <DialogDescription>
-                                                                    Ajuste os detalhes da sua tarefa. Clique em "Salvar Alterações" quando terminar.
-                                                                </DialogDescription>
-                                                            </DialogHeader>
-                                                            {taskToEdit?.id === task.id && <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />}
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                    <Button 
-                                                        variant="destructive" 
-                                                        size="sm" 
-                                                        onClick={() => handleDelete(task)}
-                                                    >
-                                                        Excluir
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* DIALOG DE EDIÇÃO */}
-            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                 <DialogContent className="sm:max-w-[625px]">
-                     <DialogHeader><DialogTitle>Editar Tarefa</DialogTitle></DialogHeader>
-                     {taskToEdit && <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />}
-                 </DialogContent>
-            </Dialog>
-
-        </AuthenticatedLayout>
-    );
-}
+                    
+                    {/* DIALOG DE EDIÇÃO GLOBAL */}
+                    <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                        <DialogContent className="sm:max-w-[625px]">
+                            <DialogHeader>
+                                <DialogTitle>Editar Tarefa</DialogTitle>
+                            </DialogHeader>
+                            {taskToEdit && <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />}
+                        </DialogContent>
+                    </Dialog>
