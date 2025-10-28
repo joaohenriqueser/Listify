@@ -443,7 +443,7 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                         </div>
                     </div>
                     
-                    {/* DIALOG DE EDIÇÃO GLOBAL */}
+                   {/* DIALOG DE EDIÇÃO GLOBAL */}
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                         <DialogContent className="sm:max-w-[625px]">
                             <DialogHeader>
@@ -452,3 +452,8 @@ export default function Dashboard({ tasks = [], filters = {} }: PageProps) {
                             {taskToEdit && <EditTaskForm task={taskToEdit} onClose={closeEditDialog} />}
                         </DialogContent>
                     </Dialog>
+                </div> 
+            </div> 
+        </AuthenticatedLayout> 
+    );
+}
