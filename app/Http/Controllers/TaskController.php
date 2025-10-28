@@ -12,32 +12,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class TaskController extends Controller
 {
     use AuthorizesRequests;
-
-    public function index(Request $request)
-    {
-        $statusFilter = $request->query('status');
-
-        $filterByDate = $request->query('filter_date', '0'); 
-
-        $query = Auth::user()->tasks();
-
-        if ($statusFilter && $statusFilter !== 'all') {
-            $query->where('status', $statusFilter);
-        }
-
-        if ($filterByDate === '1') {
-            $query->where('completed', false)
-                  ->whereDate('deadline', '>=', now()->toDateString());
-        }
-
-        $tasks = $query->orderBy('deadline', 'asc')->get();
-
-        return Inertia::render('Dashboard', [
-            'tasks' => $tasks,
-            'statusFilter' => $statusFilter,
-            'filterByDate' => $filterByDate, 
-        ]);
-    }
     
     public function store(Request $request): RedirectResponse
     {
