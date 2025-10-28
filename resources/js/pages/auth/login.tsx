@@ -90,7 +90,7 @@ export default function Login({
                             <div className="text-center text-sm text-muted-foreground">
                                 Não tem conta?{' '}
                                 <TextLink href={register()} tabIndex={5}>
-                                    Se registre
+                                    Crie a sua conta
                                 </TextLink>
                             </div>
                         )}
