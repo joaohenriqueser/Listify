@@ -3,7 +3,7 @@
     <head>
     <title inertia>Listify</title>
 
-    <link rel="icon" href="{{ Vite::asset('resources/logo-listify.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('logo-listify.svg') }}" type="image/svg+xml">
 
     @viteReactRefresh
     @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
