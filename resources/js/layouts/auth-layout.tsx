@@ -1,5 +1,3 @@
-// Em: resources/js/layouts/auth-layout.tsx
-
 import React, { useState, PropsWithChildren, ReactNode } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { Button } from '../components/ui/button';
