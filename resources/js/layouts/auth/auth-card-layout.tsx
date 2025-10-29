@@ -31,7 +31,7 @@ export default function AuthCardLayout({
                                 <img
                                     src="/logo-listify.svg"
                                     alt="Listify Logo"
-                                    className="size-16 rounded-md object-cover mb-4"
+                                    className="size-30 rounded-md object-cover mb-4"
                                 />
                             </div>
                         </Link>
