@@ -38,11 +38,8 @@ export default function AuthenticatedLayout({ header, children }: AuthenticatedL
                                         <img
                                             src="/logo-listify.svg"
                                             alt="Listify Logo"
-                                            className="h-9 w-9 rounded-md object-cover"
+                                            className="h-20 w-20 rounded-md object-cover"
                                         />
-                                        <span className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-                                            Listify
-                                        </span>
                                     </div>
                                 </Link>
                             </div>
