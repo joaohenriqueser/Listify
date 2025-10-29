@@ -3,7 +3,7 @@ export default function AppLogo() {
         <>
             <div className="flex aspect-square size-8 items-center justify-center rounded-md">
                 <img
-                    src="/logo-listify.png" 
+                    src="/logo-listify.svg" 
                     alt="Listify Logo"
                     className="size-full rounded-md object-cover" 
                 />
