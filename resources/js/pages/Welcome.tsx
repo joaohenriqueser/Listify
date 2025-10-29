@@ -57,11 +57,11 @@ export default function Welcome({ canLogin, canRegister }: WelcomeProps) {
                     {/* Sua Logo e Marca */}
                     <div className="flex flex-col items-center space-y-3">
                         <div className="flex items-center space-x-2">
-                            <svg className="h-9 w-9 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                <path d="M9 12l2 2l4-4"></path>
-                            </svg>
-                            <span className="text-2xl font-bold text-gray-800">Listify</span>
+                            <img
+                                src="/logo-listify.svg" 
+                                alt="Listify Logo"
+                                className="size-full rounded-md object-cover" 
+                            />
                         </div>
                         <p className="text-sm text-gray-500">Gestão de tarefas simples e moderna.</p>
                     </div>
