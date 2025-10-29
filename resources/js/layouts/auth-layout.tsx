@@ -63,7 +63,7 @@ export default function AuthenticatedLayout({ header, children }: AuthenticatedL
                                         <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem asChild>
-                                            <Link href={`https://${window.location.host}/profile.destroy`} method="post" as="button" className="w-full text-left">
+                                            <Link href={getRoute('profile.destroy')} method="delete" as="button" className="w-full text-left text-red-600 hover:text-red-800">
                                                 Excluir minha conta
                                             </Link>
                                         </DropdownMenuItem>
