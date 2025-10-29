@@ -148,8 +148,10 @@ const WeatherWidget = () => {
     const [weather, setWeather] = useState<WeatherData | null>(null); // Tipado
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const diaDaSemana = new Date().toLocaleDateString('pt-BR', { weekday: 'long' });
-    const diaFormatado = diaDaSemana.charAt(0).toUpperCase() + diaDaSemana.slice(1);
+    const agora = new Date();
+    const diaDaSemana = agora.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const dataFormatada = agora.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const diaCompleto = `${diaDaSemana.charAt(0).toUpperCase() + diaDaSemana.slice(1)} - ${dataFormatada}`;
 
     const fetchWeather = useCallback(async (cityName: string) => {
         if (!cityName) { setError('Por favor, digite uma cidade.'); setLoading(false); return; }
@@ -182,7 +184,7 @@ const WeatherWidget = () => {
                 {loading && !weather && <p className="text-sm text-gray-500 animate-pulse">Carregando previsão...</p>}
                 {weather && (
                     <div className="space-y-1">
-                        <p className="text-lg font-semibold text-gray-800">{diaFormatado}</p>
+                        <p className="text-lg font-semibold text-gray-800">{diaCompleto}</p>
                         <p className="font-semibold text-gray-800">{weather.name}: {Math.round(weather.main?.temp ?? 0)}°C</p>
                         <p className="text-sm text-gray-600 capitalize">{weather.weather?.[0]?.description ?? 'N/A'}</p>
                         <p className="text-xs text-gray-500">Sensação: {Math.round(weather.main?.feels_like ?? 0)}°C | Umidade: {weather.main?.humidity ?? 0}%</p>
